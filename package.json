@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines":{
+    "node" : "14.x"
+  },
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +21,7 @@
   },
   "homepage": "https://github.com/Shyam2626/CopyPasteEditor#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongoose": "^8.9.2",

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/dashboard.css">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div class="dashboard-container">
+    <h1>Welcome to the Dashboard</h1>
+    <a href="/addCode?email=<%= email %>" class="add-code-btn"><button>Add Code</button></a>
+    <h2>Your Code Snippets</h2>
+    <% if (snippets && snippets.length > 0) { %>
+        <ul>
+            <% snippets.forEach(snippet => { %>
+                <li>
+                    <a href="/snippet/<%= snippet._id %>"><%= snippet.title %></a>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No snippets found. Start adding some!</p>
+    <% } %>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Code</title>
+    <link rel="stylesheet" href="/addCode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/display/placeholder.min.js"></script>
+    
+    <!-- Mode files for each language -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/css/css.min.js"></script>
+</head>
+<body>
+    <h1>Add a New Code Snippet</h1>
+    
+    <form action="/addCode" method="POST" id="codeForm">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required><br><br>
+
+        <label for="language">Language:</label>
+        <select name="language" id="language" required>
+            <option value="text">Plain Text</option>
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="java">Java</option>
+            <option value="c">C</option>
+            <option value="cpp">C++</option>
+            <option value="sql">SQL</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+        </select><br><br>
+
+        <label for="code">Code:</label>
+        <textarea name="code" id="code" required></textarea><br><br>
+        
+        <input type="hidden" name="email" id="email" value="<%= email %>">
+        <button type="submit">Add Code</button>
+    </form>
+
+    <div id="codeEditor"></div>
+
+    <script>
+        // Function to get the CodeMirror mode based on the selected language
+        function getMode(language) {
+            switch (language) {
+                case 'python': return 'python';
+                case 'javascript': return 'javascript';
+                case 'java': return 'text/x-java';
+                case 'c': return 'text/x-csrc';
+                case 'cpp': return 'text/x-c++src';
+                case 'sql': return 'text/x-sql';
+                case 'html': return 'text/html';
+                case 'css': return 'text/css';
+                default: return 'text/plain';
+            }
+        }
+
+        // Initialize CodeMirror
+        var editor = CodeMirror(document.getElementById('codeEditor'), {
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: getMode(document.getElementById('language').value),
+            value: document.getElementById('code').value,
+            placeholder: "Enter your code here...",
+        });
+
+        // Synchronize CodeMirror content with textarea
+        editor.on('change', function() {
+            document.getElementById('code').value = editor.getValue();
+        });
+
+        // Update CodeMirror mode when the language selection changes
+        document.getElementById('language').addEventListener('change', function() {
+            editor.setOption('mode', getMode(this.value));
+        });
+
+        // Basic form submission logging
+        document.getElementById('codeForm').addEventListener('submit', function(e) {
+            console.log('Form submitted');
+        });
+    </script>
+
+    <style>
+        #code {
+            display: none;
+        }
+    </style>
+</body>
+</html>

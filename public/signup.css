@@ -1,0 +1,159 @@
+/* Base styles */
+body {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Heading */
+h1 {
+    color: #ffffff;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Form styling */
+form {
+    background-color: #252526;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    color: #9cdcfe;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    background-color: #3c3c3c;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    color: #d4d4d4;
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #007acc;
+    box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+}
+
+/* Button styling */
+button {
+    background-color: #0e639c;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #1177bb;
+}
+
+button:active {
+    background-color: #0e5384;
+}
+
+/* Login link button */
+a {
+    text-decoration: none;
+    width: 100%;
+    max-width: 400px;
+}
+
+a button {
+    background-color: #2d2d2d;
+    margin-top: 10px;
+}
+
+a button:hover {
+    background-color: #3d3d3d;
+}
+
+/* Form validation styling */
+input:invalid {
+    border-color: #f14c4c;
+}
+
+input:invalid:focus {
+    box-shadow: 0 0 0 2px rgba(241, 76, 76, 0.2);
+}
+
+/* Loading state for button */
+button[disabled] {
+    background-color: #2d2d2d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+form {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+
+    form {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}

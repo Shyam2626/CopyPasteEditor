@@ -1,0 +1,18 @@
+<!-- snippetDetail.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/snippetDetail.css">
+    <title>Snippet Detail</title>
+</head>
+<body>
+    <div class="snippet-container">
+        <h1><%= snippet.title %></h1>
+        <h3>Language: <%= snippet.language %></h3>
+        <pre><code class="language-<%= snippet.language %>"><%= snippet.code %></code></pre>
+        <a href="/showCodes?email=<%= snippet.email %>"><button>Back to Snippets</button></a>
+    </div>
+</body>
+</html>
