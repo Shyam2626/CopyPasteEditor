@@ -1,4 +1,3 @@
-<!-- snippetDetail.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,12 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/snippetDetail.css">
     <title>Snippet Detail</title>
+    <script>
+        function copyToClipboard() {
+            const codeElement = document.querySelector('.language-<%= snippet.language %>');
+            const code = codeElement.innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Code copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
 </head>
 <body>
     <div class="snippet-container">
         <h1><%= snippet.title %></h1>
+        
+        <% if (imageBase64) { %>
+            <div>
+                <h3>Image:</h3>
+                <img class="full-width-image" src="data:<%= snippet.image.contentType %>;base64,<%= imageBase64 %>" alt="Snippet Image">
+            </div>
+        <% } %>
+        
         <h3>Language: <%= snippet.language %></h3>
         <pre><code class="language-<%= snippet.language %>"><%= snippet.code %></code></pre>
+        
+        <button onclick="copyToClipboard()">Copy Code</button>
         <a href="/showCodes?email=<%= snippet.email %>"><button>Back to Snippets</button></a>
     </div>
 </body>
