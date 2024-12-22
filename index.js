@@ -76,7 +76,7 @@ app.post("/", async (req, res) => {
   if (!user) {
     return res.status(400).send("User not found");
   }
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = password === user.password;
   if (!isMatch) {
     return res.status(400).send("Incorrect password");
   }
@@ -94,11 +94,9 @@ app.post("/signup", async (req, res) => {
     return res.status(400).send("Passwords do not match");
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
   const newUser = new User({
     email,
-    password: hashedPassword,
+    password: password,
   });
 
   await newUser.save();
