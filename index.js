@@ -187,5 +187,120 @@ app.get("/snippet/:id", async (req, res) => {
     res.render("snippetDetail", { snippet, imageBase64 });
 });
 
+app.post('/delete-snippet/:id', async (req, res) => {
+  const email = req.query.email;
+  if (!email) {
+      return res.redirect('/');
+  }
+
+  try {
+      await Snippet.findByIdAndDelete(req.params.id);
+      res.redirect(`/dashboard?email=${email}`);  // Redirect back to dashboard with email
+  } catch (error) {
+      console.error("Error deleting snippet:", error);
+      res.status(500).send('Error deleting snippet');
+  }
+});
+
+
+app.get('/edit-snippet/:id', async (req, res) => {
+  const email = req.query.email;
+  if (!email) {
+      return res.redirect('/');
+  }
+
+  try {
+      const snippet = await Snippet.findById(req.params.id);
+      
+      // Check if snippet exists
+      if (!snippet) {
+          console.error("Snippet not found:", req.params.id);
+          return res.status(404).render('error', { 
+              message: 'Snippet not found',
+              email: email 
+          });
+      }
+
+      // Check if user owns this snippet
+      if (snippet.email !== email) {
+          console.error("Unauthorized access attempt to snippet:", req.params.id);
+          return res.status(403).render('error', { 
+              message: 'Unauthorized access',
+              email: email 
+          });
+      }
+
+      res.render('edit-snippet', { snippet, email });
+
+  } catch (error) {
+      console.error("Error in edit-snippet route:", error);
+      if (error.name === 'CastError') {
+          return res.status(400).render('error', { 
+              message: 'Invalid snippet ID',
+              email: email 
+          });
+      }
+      res.status(500).render('error', { 
+          message: 'Server error occurred',
+          email: email 
+      });
+  }
+});
+
+// Modified update snippet route with validation
+app.post('/update-snippet/:id', async (req, res) => {
+  const email = req.query.email;
+  const { title, code } = req.body;
+  
+  if (!email) {
+      return res.redirect('/');
+  }
+
+  try {
+      // First find the snippet
+      const snippet = await Snippet.findById(req.params.id);
+      
+      if (!snippet) {
+          return res.status(404).render('error', { 
+              message: 'Snippet not found',
+              email: email 
+          });
+      }
+
+      // Verify ownership
+      if (snippet.email !== email) {
+          return res.status(403).render('error', { 
+              message: 'Unauthorized access',
+              email: email 
+          });
+      }
+
+      // Validate inputs
+      if (!title || !code) {
+          return res.status(400).render('edit-snippet', {
+              snippet: { ...snippet.toObject(), title, code },
+              email,
+              error: 'Title and code are required'
+          });
+      }
+
+      // Update the snippet
+      await Snippet.findByIdAndUpdate(req.params.id, { 
+          title, 
+          code,
+          updatedAt: new Date()
+      });
+
+      res.redirect(`/dashboard?email=${encodeURIComponent(email)}`);
+
+  } catch (error) {
+      console.error("Error updating snippet:", error);
+      res.status(500).render('error', { 
+          message: 'Error updating snippet',
+          email: email 
+      });
+  }
+});
+
 
 app.listen(3000, () => console.log("Server started on http://localhost:3000"));

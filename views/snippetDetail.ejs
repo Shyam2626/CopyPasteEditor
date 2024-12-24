@@ -3,36 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/snippetDetail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-css.min.js"></script>
     <title>Snippet Detail</title>
-    <script>
-        function copyToClipboard() {
-            const codeElement = document.querySelector('.language-<%= snippet.language %>');
-            const code = codeElement.innerText;
-            navigator.clipboard.writeText(code).then(() => {
-                alert('Code copied to clipboard');
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
+    <style>
+        :root {
+            --primary-bg: #1a1a1a;
+            --secondary-bg: #2d2d2d;
+            --accent-color: #7289da;
+            --text-primary: #ffffff;
+            --text-secondary: #b9bbbe;
+            --success-color: #43b581;
+            --error-color: #f04747;
+            --glassmorphism-bg: rgba(45, 45, 45, 0.25);
+            --code-bg: rgba(0, 0, 0, 0.3);
         }
-    </script>
+
+        body {
+            background: linear-gradient(-45deg, #1a1a1a, #2d2d2d, #1f2937, #111827);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .snippet-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 30px;
+            background: var(--glassmorphism-bg);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h3 {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .language-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            margin: 20px 0;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .image-container {
+            margin: 20px 0;
+            background: var(--code-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .full-width-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .copy-btn:hover {
+            background: #5f73bc;
+            box-shadow: 0 5px 15px rgba(114, 137, 218, 0.3);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5f73bc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .snippet-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="snippet-container">
         <h1><%= snippet.title %></h1>
         
+        <div class="language-badge">
+            <i class="fas fa-code"></i> <%= snippet.language %>
+        </div>
+        
         <% if (imageBase64) { %>
-            <div>
-                <h3>Image:</h3>
+            <div class="image-container">
+                <h3>Image</h3>
                 <img class="full-width-image" src="data:<%= snippet.image.contentType %>;base64,<%= imageBase64 %>" alt="Snippet Image">
             </div>
         <% } %>
         
-        <h3>Language: <%= snippet.language %></h3>
+        <h3>Code</h3>
         <pre><code class="language-<%= snippet.language %>"><%= snippet.code %></code></pre>
         
-        <button onclick="copyToClipboard()">Copy Code</button>
-        <a href="/showCodes?email=<%= snippet.email %>"><button>Back to Snippets</button></a>
+        <div class="button-group">
+            <button onclick="copyToClipboard()" class="copy-btn">
+                <i class="fas fa-copy"></i> Copy Code
+            </button>
+            <a href="/showCodes?email=<%= snippet.email %>">
+                <button class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Snippets
+                </button>
+            </a>
+        </div>
     </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function copyToClipboard() {
+            const codeElement = document.querySelector('code');
+            const code = codeElement.innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('Code copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showToast('Failed to copy code', true);
+            });
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? 'var(--error-color)' : 'var(--success-color)';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Highlight code on page load
+        document.addEventListener('DOMContentLoaded', (event) => {
+            Prism.highlightAll();
+        });
+    </script>
 </body>
 </html>

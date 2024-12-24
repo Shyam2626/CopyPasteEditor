@@ -1,27 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Dashboard</title>
+    <style>
+        /* login.css */
+        :root {
+            --primary-bg: #1a1a1a;
+            --secondary-bg: #2d2d2d;
+            --accent-color: #7289da;
+            --text-primary: #ffffff;
+            --text-secondary: #b9bbbe;
+            --success-color: #43b581;
+            --error-color: #f04747;
+            --glassmorphism-bg: rgba(45, 45, 45, 0.25);
+        }
+
+        body {
+            background: linear-gradient(-45deg, #1a1a1a, #2d2d2d, #1f2937, #111827);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 30px;
+            background: var(--glassmorphism-bg);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            margin: 30px 0 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .add-code-btn {
+            text-decoration: none;
+        }
+
+        .add-code-btn button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .add-code-btn button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(114, 137, 218, 0.3);
+            background: #5f73bc;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        li {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+        }
+
+        li:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        li a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        li a:hover {
+            color: var(--accent-color);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .edit-btn {
+            color: var(--accent-color);
+        }
+
+        .delete-btn {
+            color: var(--error-color);
+        }
+
+        .edit-btn:hover,
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </head>
+
 <body>
     <div class="dashboard-container">
-    <h1>Welcome to the Dashboard</h1>
-    <a href="/addCode?email=<%= email %>" class="add-code-btn"><button>Add Code</button></a>
-    <h2>Your Code Snippets</h2>
-    <% if (snippets && snippets.length > 0) { %>
-        <ul>
-            <% snippets.forEach(snippet => { %>
-                <li>
-                    <a href="/snippet/<%= snippet._id %>"><%= snippet.title %></a>
-                </li>
-            <% }) %>
-        </ul>
-    <% } else { %>
-        <p>No snippets found. Start adding some!</p>
-    <% } %>
-</div>
+        <h1>Welcome to the Dashboard</h1>
+        <a href="/addCode?email=<%= email %>" class="add-code-btn">
+            <button>
+                <i class="fas fa-plus"></i> Add Code
+            </button>
+        </a>
+        <h2>Your Code Snippets</h2>
+        <% if (snippets && snippets.length > 0) { %>
+            <ul>
+                <% snippets.forEach(snippet => { %>
+                    <li onclick="navigateToSnippet('<%= snippet._id %>')">
+                        <span>
+                            <%= snippet.title %>
+                        </span>
+                        <div class="button-group">
+                            <a href="/edit-snippet/<%= snippet._id %>?email=<%= email %>" class="edit-btn"
+                                onclick="event.stopPropagation()">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="/delete-snippet/<%= snippet._id %>?email=<%= email %>" method="POST"
+                                style="display: inline;" onsubmit="event.stopPropagation()">
+                                <button type="submit" class="delete-btn"
+                                    onclick="return confirm('Are you sure you want to delete this snippet?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p class="empty-message">No snippets found. Start adding some!</p>
+        <% } %>
+    </div>
+
+    <script>
+        // Navigate to the snippet details page
+        function navigateToSnippet(snippetId) {
+            window.location.href = `/snippet/${snippetId}`;
+        }
+    </script>
 </body>
+
 </html>
